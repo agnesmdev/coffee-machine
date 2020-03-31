@@ -73,4 +73,13 @@ class CoffeeMachineSpec extends AnyFeatureSpec with GivenWhenThen {
       assert(result === "ExtraHot Tea with 2 sugar and 1 stick")
     }
   }
+
+  Feature("fourth step") {
+    Scenario("Checking all drinks sold") {
+      val input = "R:"
+      val result = CoffeeMachine.takeCommand(input, money)
+
+      assert(result === "Tea sold: 2\nCoffee sold: 2\nHotChocolate sold: 2\nOrangeJuice sold: 1")
+    }
+  }
 }

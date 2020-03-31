@@ -2,6 +2,8 @@
 
 object CoffeeMachine {
 
+  private var drinks: Seq[Drink] = Nil
+
   def main(args: Array[String]): Unit = {
     val money = if (args.length > 1) args(1).toDouble else 0
     println(takeCommand(args.head, money))
@@ -11,6 +13,7 @@ object CoffeeMachine {
     Command.parse(input) match {
       case None => "error"
       case Some(command: MessageCommand) => command.message
+      case Some(ReportCommand) => report
       case Some(command: DrinkCommand) =>
         val drink = Drink(command.drinkType, command.sugar, command.hot)
         val missingMoney = command.drinkType.price - money
@@ -18,8 +21,15 @@ object CoffeeMachine {
         if (missingMoney > 0) {
           s"You need to put $missingMoney more to get a ${drink.drinkType}"
         } else {
+          drinks ++= Seq(drink)
           drink.toString
         }
     }
+  }
+
+  private def report: String = {
+    drinks.groupBy(_.drinkType).map { case (drinkType, d) =>
+      s"$drinkType sold: ${d.length}"
+    }.mkString("\n")
   }
 }

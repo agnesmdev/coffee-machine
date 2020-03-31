@@ -17,6 +17,12 @@ case class MessageCommand(message: String) extends Command {
   override val commandType: CommandType = Message
 }
 
+case object ReportCommand extends Command {
+  override val commandType: CommandType = Report
+
+  override val message: String = ""
+}
+
 case class DrinkCommand(drinkType: DrinkType, hot: Boolean, sugar: Int) extends Command {
   override val commandType: CommandType = drinkType
 
@@ -25,6 +31,10 @@ case class DrinkCommand(drinkType: DrinkType, hot: Boolean, sugar: Int) extends 
 
 case object Message extends CommandType {
   override val value: String = "M"
+}
+
+case object Report extends CommandType {
+  override val value: String = "R"
 }
 
 case object Tea extends DrinkType {
@@ -75,6 +85,7 @@ object Command {
     command match {
       case drinkRegex(t, h, s, _) => DrinkType.parse(t).map(DrinkCommand(_, h, s))
       case messageRegex(t, m) if t == Message.value => Some(MessageCommand(m))
+      case messageRegex(t, _) if t == Report.value => Some(ReportCommand)
       case _ => None
     }
   }
