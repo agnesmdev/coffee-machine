@@ -23,18 +23,26 @@ case object Message extends CommandType {
   override val value: String = "M"
 }
 
-sealed trait DrinkType extends CommandType
+sealed trait DrinkType extends CommandType {
+  def price: Double
+}
 
 case object Tea extends DrinkType {
   override val value: String = "T"
+
+  override val price: Double = 0.4
 }
 
 case object HotChocolate extends DrinkType {
   override val value: String = "H"
+
+  override val price: Double = 0.5
 }
 
 case object Coffee extends DrinkType {
   override val value: String = "C"
+
+  override val price: Double = 0.6
 }
 
 object DrinkType {

@@ -3,14 +3,23 @@
 object CoffeeMachine {
 
   def main(args: Array[String]): Unit = {
-    println(takeCommand(args.head))
+    val money = if (args.length > 1) args(1).toDouble else 0
+    println(takeCommand(args.head, money))
   }
 
-  def takeCommand(input: String): String = {
+  def takeCommand(input: String, money: Double): String = {
     Command.parse(input) match {
       case None => "error"
       case Some(command: MessageCommand) => command.message
-      case Some(command: DrinkCommand) => Drink(command.drinkType, command.sugar).toString
+      case Some(command: DrinkCommand) =>
+        val drink = Drink(command.drinkType, command.sugar)
+        val missingMoney = command.drinkType.price - money
+
+        if (missingMoney > 0) {
+          s"You need to put $missingMoney more to get a ${drink.drinkType}"
+        } else {
+          drink.toString
+        }
     }
   }
 }
