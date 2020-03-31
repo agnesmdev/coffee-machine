@@ -12,7 +12,7 @@ object CoffeeMachine {
       case None => "error"
       case Some(command: MessageCommand) => command.message
       case Some(command: DrinkCommand) =>
-        val drink = Drink(command.drinkType, command.sugar)
+        val drink = Drink(command.drinkType, command.sugar, command.hot)
         val missingMoney = command.drinkType.price - money
 
         if (missingMoney > 0) {

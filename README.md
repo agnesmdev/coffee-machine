@@ -8,6 +8,6 @@ Implementation of the [coffee machine kata](https://simcap.github.io/coffeemachi
 
 - [x] First iteration: Making Drinks 
 - [x] Second iteration: Going into business
-- [ ] Third iteration: Extra hot
+- [x] Third iteration: Extra hot
 - [ ] Fourth iteration: Making money
 - [ ] Fifth iteration: Running out

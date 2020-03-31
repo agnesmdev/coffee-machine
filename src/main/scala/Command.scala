@@ -5,26 +5,26 @@ sealed trait Command {
   def message: String
 }
 
+sealed trait CommandType {
+  def value: String
+}
+
+sealed trait DrinkType extends CommandType {
+  def price: Double
+}
+
 case class MessageCommand(message: String) extends Command {
   override val commandType: CommandType = Message
 }
 
-case class DrinkCommand(drinkType: DrinkType, sugar: Int) extends Command {
+case class DrinkCommand(drinkType: DrinkType, hot: Boolean, sugar: Int) extends Command {
   override val commandType: CommandType = drinkType
 
   override val message: String = if (sugar == 0) "::" else s"$sugar:0"
 }
 
-sealed trait CommandType {
-  def value: String
-}
-
 case object Message extends CommandType {
   override val value: String = "M"
-}
-
-sealed trait DrinkType extends CommandType {
-  def price: Double
 }
 
 case object Tea extends DrinkType {
@@ -45,28 +45,35 @@ case object Coffee extends DrinkType {
   override val price: Double = 0.6
 }
 
+case object OrangeJuice extends DrinkType {
+  override val value: String = "O"
+
+  override val price: Double = 0.6
+}
+
 object DrinkType {
   def parse(value: String): Option[DrinkType] = value match {
     case Tea.value => Some(Tea)
     case HotChocolate.value => Some(HotChocolate)
     case Coffee.value => Some(Coffee)
+    case OrangeJuice.value => Some(OrangeJuice)
     case _ => None
   }
 }
 
 object DrinkCommand {
-  def apply(t: DrinkType, s: String): DrinkCommand = {
-    DrinkCommand(t, if (s.isEmpty) 0 else s.toInt)
+  def apply(t: DrinkType, h: String, s: String): DrinkCommand = {
+    DrinkCommand(t, h.nonEmpty, if (s.isEmpty) 0 else s.toInt)
   }
 }
 
 object Command {
-  private val drinkRegex = "(.*):(\\d*):(\\d*)".r
-  private val messageRegex = "(.*):(.*)".r
+  private val drinkRegex = "(\\w)([h]?):(\\d*):(\\d*)".r
+  private val messageRegex = "(\\w):(.*)".r
 
   def parse(command: String): Option[Command] = {
     command match {
-      case drinkRegex(t, s, _) => DrinkType.parse(t).map(DrinkCommand(_, s))
+      case drinkRegex(t, h, s, _) => DrinkType.parse(t).map(DrinkCommand(_, h, s))
       case messageRegex(t, m) if t == Message.value => Some(MessageCommand(m))
       case _ => None
     }
