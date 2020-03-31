@@ -1,9 +1,22 @@
-import org.scalatest.GivenWhenThen
-import org.scalatest.featurespec.AnyFeatureSpec
+import java.io.{ByteArrayOutputStream, PrintStream}
 
-class CoffeeMachineSpec extends AnyFeatureSpec with GivenWhenThen {
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.{BeforeAndAfter, GivenWhenThen}
+
+class CoffeeMachineSpec extends AnyFeatureSpec with GivenWhenThen with BeforeAndAfter {
 
   private val money = 1.0
+
+  private val errorContent = new ByteArrayOutputStream
+  private val originalErrorContent = System.err
+
+  before {
+    System.setErr(new PrintStream(errorContent))
+  }
+
+  after {
+    System.setErr(originalErrorContent)
+  }
 
   Feature("First step") {
     Scenario("Drink maker makes 1 tea with 1 sugar and a stick") {
@@ -80,6 +93,19 @@ class CoffeeMachineSpec extends AnyFeatureSpec with GivenWhenThen {
       val result = CoffeeMachine.takeCommand(input, money)
 
       assert(result === "Tea sold: 2\nCoffee sold: 2\nHotChocolate sold: 2\nOrangeJuice sold: 1")
+    }
+  }
+
+  Feature("fifth step") {
+    Scenario("No more drink available and a notification is sent") {
+      val input = "C:2:0"
+      val result = CoffeeMachine.takeCommand(input, money)
+
+      assert(result === "No more Coffee is available, an email has been sent to refill the machine")
+
+      val errorLines = errorContent.toString.split("\n")
+      assert(errorLines.length === 1)
+      assert(errorLines.head === "Drink Coffee is missing, replace ASAP")
     }
   }
 }

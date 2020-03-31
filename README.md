@@ -10,4 +10,4 @@ Implementation of the [coffee machine kata](https://simcap.github.io/coffeemachi
 - [x] Second iteration: Going into business
 - [x] Third iteration: Extra hot
 - [x] Fourth iteration: Making money
-- [ ] Fifth iteration: Running out
+- [x] Fifth iteration: Running out

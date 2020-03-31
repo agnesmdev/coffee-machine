@@ -2,6 +2,9 @@
 
 object CoffeeMachine {
 
+  private val emailNotifier = new EmailNotifierMocker()
+  private val beverageQuantityChecker = new BeverageQuantityCheckerMocker()
+
   private var drinks: Seq[Drink] = Nil
 
   def main(args: Array[String]): Unit = {
@@ -20,6 +23,9 @@ object CoffeeMachine {
 
         if (missingMoney > 0) {
           s"You need to put $missingMoney more to get a ${drink.drinkType}"
+        } else if (beverageQuantityChecker.isEmpty(drink.drinkType)) {
+          emailNotifier.notifyMissingDrink(drink.drinkType)
+          s"No more ${drink.drinkType} is available, an email has been sent to refill the machine"
         } else {
           drinks ++= Seq(drink)
           drink.toString
